@@ -5,17 +5,14 @@ exports.register = async (req, res) => {
 
     try {
 
-        const {
-            name,
-            email,
-            password
-        } = req.body;
+        const { name, email, password } = req.body;
 
-        const { data: existing } =
-            await supabase
-                .from("profiles")
-                .select("*")
-                .eq("email", email);
+        const { data: existing } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("email", email);
+
+
 
         if (existing.length > 0) {
 
@@ -28,7 +25,7 @@ exports.register = async (req, res) => {
         const hashedPassword =
             await bcrypt.hash(password, 10);
 
-        const { data, error } =
+        const { data: user, error } =
             await supabase
                 .from("profiles")
                 .insert([
