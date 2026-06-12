@@ -1,110 +1,110 @@
-const bcrypt = require("bcryptjs");
-const supabase = require("../config/supabase");
+// const bcrypt = require("bcryptjs");
+// const supabase = require("../config/supabase");
 
-exports.register = async (req, res) => {
+// // exports.register = async (req, res) => {
 
-    try {
+// //     try {
 
-        const {
-            name,
-            email,
-            password
-        } = req.body;
+// //         const {
+// //             name,
+// //             email,
+// //             password
+// //         } = req.body;
 
-        const { data: existing } =
-            await supabase
-                .from("profiles")
-                .select("*")
-                .eq("email", email);
+// //         const { data: existing } =
+// //             await supabase
+// //                 .from("profiles")
+// //                 .select("*")
+// //                 .eq("email", email);
 
-        if (existing.length > 0) {
+// //         if (existing.length > 0) {
 
-            return res.status(400).json({
-                success: false,
-                message: "Email already exists"
-            });
-        }
+// //             return res.status(400).json({
+// //                 success: false,
+// //                 message: "Email already exists"
+// //             });
+// //         }
 
-        const hashedPassword =
-            await bcrypt.hash(password, 10);
+// //         const hashedPassword =
+// //             await bcrypt.hash(password, 10);
 
-        const { data, error } =
-            await supabase
-                .from("profiles")
-                .insert([
-                    {
-                        name,
-                        email,
-                        password: hashedPassword
-                    }
-                ])
-                .select()
-                .single();
+// //         const { data, error } =
+// //             await supabase
+// //                 .from("profiles")
+// //                 .insert([
+// //                     {
+// //                         name,
+// //                         email,
+// //                         password: hashedPassword
+// //                     }
+// //                 ])
+// //                 .select()
+// //                 .single();
 
-        if (error) {
+// //         if (error) {
 
-            return res.status(500).json(error);
-        }
+// //             return res.status(500).json(error);
+// //         }
 
-        res.json({
-            success: true,
-            user: data
-        });
+// //         res.json({
+// //             success: true,
+// //             user: data
+// //         });
 
-    } catch (error) {
+// //     } catch (error) {
 
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-};
+// //         res.status(500).json({
+// //             success: false,
+// //             message: error.message
+// //         });
+// //     }
+// // };
 
 
 
-exports.login = async (req, res) => {
+// // exports.login = async (req, res) => {
 
-    try {
+// //     try {
 
-        const { email, password } = req.body;
+// //         const { email, password } = req.body;
 
-        const { data: user, error } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("email", email)
-            .single();
+// //         const { data: user, error } = await supabase
+// //             .from("profiles")
+// //             .select("*")
+// //             .eq("email", email)
+// //             .single();
 
-        if (error || !user) {
+// //         if (error || !user) {
 
-            return res.status(400).json({
-                success: false,
-                message: "User not found"
-            });
-        }
+// //             return res.status(400).json({
+// //                 success: false,
+// //                 message: "User not found"
+// //             });
+// //         }
 
-        const isMatch = await bcrypt.compare(
-            password,
-            user.password
-        );
+// //         const isMatch = await bcrypt.compare(
+// //             password,
+// //             user.password
+// //         );
 
-        if (!isMatch) {
+// //         if (!isMatch) {
 
-            return res.status(400).json({
-                success: false,
-                message: "Invalid password"
-            });
-        }
+// //             return res.status(400).json({
+// //                 success: false,
+// //                 message: "Invalid password"
+// //             });
+// //         }
 
-        res.json({
-            success: true,
-            user
-        });
+// //         res.json({
+// //             success: true,
+// //             user
+// //         });
 
-    } catch (error) {
+// //     } catch (error) {
 
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-};
+// //         res.status(500).json({
+// //             success: false,
+// //             message: error.message
+// //         });
+// //     }
+// // };
