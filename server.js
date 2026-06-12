@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 app.use("/api/plants", plantRoutes);
-// app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
     res.send("PlantID Backend Running");
