@@ -100,28 +100,47 @@ exports.getHistory = async (req, res) => {
 
     try {
 
-        const { data, error } =
-            await supabase
-                .from("plant_history")
-                .select("*")
-                .order(
-                    "scanned_at",
-                    {
-                        ascending: false
-                    }
-                );
+        const { data, error } = await supabase
+            .from("plant_history")
+            .select("*")
+            .order(
+                "scanned_at",
+                { ascending: false }
+            );
 
-        if (error) {
-
-            return res.status(500)
-                .json(error);
-        }
+        if (error) return res.status(500).json(error);
 
         res.json(data);
 
     } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+exports.deleteHistory = async (req, res) => {
+
+    try {
+
+        const id = req.params.id;
+
+        const { error } = await supabase
+            .from("plant_history")
+            .delete()
+            .eq("id", id);
+            
+
+        if (error) return res.status(500).json(error);
+
+        res.json({
+            success: true,
+            message: "History deleted"
+        });
+
+    } catch (error) {
 
         res.status(500).json({
+            success: false,
             message: error.message
         });
     }
