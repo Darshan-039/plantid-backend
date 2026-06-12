@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 
+
 const supabase = require("../config/supabase");
 
 
@@ -26,42 +27,40 @@ exports.identifyPlant = async (req, res) => {
                 },
                 {
                     headers: {
-                        "Api-Key":
-                            process.env.PLANT_API_KEY,
-                        "Content-Type":
-                            "application/json"
+                        "Api-Key": process.env.PLANT_API_KEY,
+                        "Content-Type": "application/json"
                     }
                 }
             );
 
         const suggestion = response.data.suggestions[0];
 
-        const { data, error } =
+        const userId = req.body.user_id;
+
+        const { data: history, error } =
             await supabase
                 .from("plant_history")
                 .insert([
                     {
+                        user_id: userId,
+
                         plant_name:
                             suggestion.plant_name,
 
                         scientific_name:
-                            suggestion.plant_details
-                                .scientific_name,
+                            suggestion.plant_details.scientific_name,
 
                         confidence:
                             suggestion.probability,
 
                         common_name:
-                            suggestion.plant_details
-                                .common_names?.[0] || "",
+                            suggestion.plant_details.common_names?.[0] || "",
 
                         family:
-                            suggestion.plant_details
-                                .taxonomy?.family || "",
+                            suggestion.plant_details.taxonomy?.family || "",
 
                         genus:
-                            suggestion.plant_details
-                                .taxonomy?.genus || "",
+                            suggestion.plant_details.taxonomy?.genus || "",
 
                         description:
                             suggestion.plant_details
@@ -74,9 +73,7 @@ exports.identifyPlant = async (req, res) => {
                 .select()
                 .single();
 
-        if (error) {
-            console.log(error);
-        }
+        if (error) console.log(error);
 
         res.json({
             success: true,
@@ -100,20 +97,31 @@ exports.getHistory = async (req, res) => {
 
     try {
 
-        const { data, error } = await supabase
-            .from("plant_history")
-            .select("*")
-            .order(
-                "scanned_at",
-                { ascending: false }
-            );
+        const userId =
+            req.query.user_id;
 
-        if (error) return res.status(500).json(error);
+        const { data, error } =
+            await supabase
+                .from("plant_history")
+                .select("*")
+                .eq("user_id", userId)
+                .order(
+                    "id",
+                    { ascending: false }
+                );
+
+        if (error) {
+            return res.status(500).json(error);
+        }
 
         res.json(data);
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
@@ -128,20 +136,13 @@ exports.deleteHistory = async (req, res) => {
             .from("plant_history")
             .delete()
             .eq("id", id);
-            
+
 
         if (error) return res.status(500).json(error);
 
-        res.json({
-            success: true,
-            message: "History deleted"
-        });
+        res.json({ success: true, message: "History deleted" });
 
     } catch (error) {
-
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 };

@@ -60,28 +60,35 @@ exports.register = async (req, res) => {
     }
 };
 
+
+
 exports.login = async (req, res) => {
 
     try {
 
         const { email, password } = req.body;
 
-        const { data, error } = await supabase
+        const { data: user, error } = await supabase
             .from("profiles")
             .select("*")
             .eq("email", email)
             .single();
 
-        if (!data) {
+        if (error || !user) {
+
             return res.status(400).json({
                 success: false,
                 message: "User not found"
             });
         }
 
-        const isMatch = await bcrypt.compare(password, data.password);
+        const isMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
 
         if (!isMatch) {
+
             return res.status(400).json({
                 success: false,
                 message: "Invalid password"
@@ -90,7 +97,7 @@ exports.login = async (req, res) => {
 
         res.json({
             success: true,
-            user: data
+            user
         });
 
     } catch (error) {
