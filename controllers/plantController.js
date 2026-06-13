@@ -119,9 +119,12 @@ exports.getHistory = async (req, res) => {
 
     try {
 
+        const userId = req.query.user_id;
+
         const { data, error } = await supabase
             .from("plant_history")
             .select("*")
+            .eq("user_id", userId)
             .order("id", { ascending: false });
 
         if (error) {
