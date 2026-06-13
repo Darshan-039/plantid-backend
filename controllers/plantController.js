@@ -16,6 +16,9 @@ exports.identifyPlant = async (req, res) => {
 
         const imagePath = req.file.path;
 
+        console.log("BODY:", req.body);
+        console.log("USER ID:", req.body.user_id);
+
         const imageBase64 = fs.readFileSync(
             imagePath,
             { encoding: "base64" }
@@ -52,6 +55,8 @@ exports.identifyPlant = async (req, res) => {
             .from("plant_history")
             .insert([
                 {
+                    user_id: userId,
+                    
                     plant_name:
                         suggestion.plant_name || "",
 
