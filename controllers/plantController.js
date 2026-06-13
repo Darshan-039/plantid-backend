@@ -15,6 +15,7 @@ exports.identifyPlant = async (req, res) => {
         }
 
         const imagePath = req.file.path;
+        const userId = req.body.user_id;
 
         console.log("BODY:", req.body);
         console.log("USER ID:", req.body.user_id);
@@ -56,7 +57,7 @@ exports.identifyPlant = async (req, res) => {
             .insert([
                 {
                     user_id: userId,
-                    
+
                     plant_name:
                         suggestion.plant_name || "",
 
@@ -87,7 +88,8 @@ exports.identifyPlant = async (req, res) => {
 
         if (error) {
 
-            console.log("Supabase Error:", error);
+            console.log("SUPABASE ERROR:");
+            console.log(error);
 
             return res.status(500).json({
                 success: false,
