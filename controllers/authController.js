@@ -13,17 +13,14 @@ exports.register = async (req, res) => {
             .eq("email", email);
 
 
-
         if (existing.length > 0) {
-
             return res.status(400).json({
                 success: false,
                 message: "Email already exists"
             });
         }
 
-        const hashedPassword =
-            await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const { data: user, error } =
             await supabase
@@ -38,10 +35,12 @@ exports.register = async (req, res) => {
                 .select()
                 .single();
 
-        if (error) {
 
+
+        if (error) {
             return res.status(500).json(error);
         }
+
 
         res.json({
             success: true,
@@ -51,6 +50,8 @@ exports.register = async (req, res) => {
                 email: user.email
             }
         });
+
+
 
     } catch (error) {
 

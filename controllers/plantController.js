@@ -127,12 +127,9 @@ exports.getHistory = async (req, res) => {
             .eq("user_id", userId)
             .order("id", { ascending: false });
 
-        if (error) {
 
-            return res.status(500).json({
-                success: false,
-                message: error.message
-            });
+        if (error) {
+            return res.status(500).json({ success: false, message: error.message });
         }
 
         res.json(data);
@@ -145,6 +142,7 @@ exports.getHistory = async (req, res) => {
         });
     }
 };
+
 
 
 exports.deleteHistory = async (req, res) => {
