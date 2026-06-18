@@ -8,7 +8,7 @@ const askPlantQuestion = async (req, res) => {
         const { plantName, question } = req.body;
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash"
+            model: "gemini-1.5-flash"
         });
 
         const prompt = `You are a plant expert. 
@@ -25,7 +25,14 @@ const askPlantQuestion = async (req, res) => {
     } catch (error) {
 
         console.error(error);
-
+    
+        if (error.status === 503) {
+            return res.status(503).json({
+                success: false,
+                message: "AI is busy right now. Please try again in a few seconds."
+            });
+        }
+    
         res.status(500).json({
             success: false,
             message: error.message
