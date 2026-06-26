@@ -7,4 +7,6 @@ const supabase =
         process.env.SUPABASE_SERVICE_KEY
     );
 
+
+
 module.exports = supabase;

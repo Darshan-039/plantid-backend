@@ -20,6 +20,7 @@ exports.register = async (req, res) => {
             });
         }
 
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const { data: user, error } =
@@ -36,7 +37,6 @@ exports.register = async (req, res) => {
                 .single();
 
 
-
         if (error) {
             return res.status(500).json(error);
         }
@@ -50,7 +50,6 @@ exports.register = async (req, res) => {
                 email: user.email
             }
         });
-
 
 
     } catch (error) {

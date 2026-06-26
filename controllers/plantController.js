@@ -3,6 +3,7 @@ const fs = require("fs");
 
 const supabase = require("../config/supabase");
 
+
 exports.identifyPlant = async (req, res) => {
 
     try {
@@ -43,6 +44,7 @@ exports.identifyPlant = async (req, res) => {
             }
         );
 
+
         const suggestion = response.data.suggestions?.[0];
 
         if (!suggestion) {
@@ -58,29 +60,21 @@ exports.identifyPlant = async (req, res) => {
                 {
                     user_id: userId,
 
-                    plant_name:
-                        suggestion.plant_name || "",
+                    plant_name: suggestion.plant_name || "",
 
-                    scientific_name:
-                        suggestion.plant_details?.scientific_name || "",
+                    scientific_name: suggestion.plant_details?.scientific_name || "",
 
-                    confidence:
-                        suggestion.probability || 0,
+                    confidence: suggestion.probability || 0,
 
-                    common_name:
-                        suggestion.plant_details?.common_names?.[0] || "",
+                    common_name: suggestion.plant_details?.common_names?.[0] || "",
 
-                    family:
-                        suggestion.plant_details?.taxonomy?.family || "",
+                    family: suggestion.plant_details?.taxonomy?.family || "",
 
-                    genus:
-                        suggestion.plant_details?.taxonomy?.genus || "",
+                    genus: suggestion.plant_details?.taxonomy?.genus || "",
 
-                    description:
-                        suggestion.plant_details?.wiki_description?.value || "",
+                    description: suggestion.plant_details?.wiki_description?.value || "",
 
-                    image_url:
-                        imagePath
+                    image_url: imagePath
                 }
             ])
             .select()
@@ -128,9 +122,9 @@ exports.getHistory = async (req, res) => {
             .order("id", { ascending: false });
 
 
-        if (error) {
+        if (error)
             return res.status(500).json({ success: false, message: error.message });
-        }
+
 
         res.json(data);
 
@@ -175,5 +169,6 @@ exports.deleteHistory = async (req, res) => {
             success: false,
             message: error.message
         });
+
     }
 };
